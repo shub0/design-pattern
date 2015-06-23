@@ -30,7 +30,7 @@ class Composite(Component):
     def component_function(self):
         map(lambda x: x.component_function(), self.children)
 
-def main():
+def client():
     c = Composite()
     l = Leaf()
     l_two = Leaf()
@@ -39,4 +39,4 @@ def main():
     c.component_function()
 
 if __name__ == "__main__":
-    main()
+    client()

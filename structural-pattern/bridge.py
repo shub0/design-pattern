@@ -79,6 +79,7 @@ class Windows(ImplementationInterface):
 
 
 def main():
+    # client
     linux = Linux()
     windows = Windows()
 
