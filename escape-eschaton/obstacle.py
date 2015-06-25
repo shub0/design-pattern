@@ -8,27 +8,29 @@ class Obstacle:
         raise NotImplementedError()
 
 class Asteroid(Obstacle):
-    def __init__(self, pos, velocity):
-        self._pos = pos
-        self._curr_pos = pos
-        self._velocity = velocity
+    def __init__(self, offset, freq):
+        self._radisu = offset
+        self._curr_angle = 0
+        self._velocity = 360.0 / freq
 
     def move(self):
-        self._curr_pos += 1
-        self._pos = (self._curr_pos % self._velocity)
+        self._curr_angle += _velocity
+        if self._curr_angle >= 360.0:
+            self._curr_angle -= 360.0
 
-    def block(self, pos):
-        return self._curr_pos == pos
+    def block(self, ship):
+        return self._raidus == ship.radius and self._curr_angle = ship.angle
 
-class Blast(Obstacle):
+class Eschanton:
     def __init__(self, velocity):
-        self._pos = 0
+        self._radius = 0
         self._micro_pos = 0
         self._velocity = velocity
 
     def move(self):
         self._micro_pos += 1
-        self._pos = (self._micro_pos % self._velocity)
+        self._raidus = (self._micro_pos / self._velocity)
 
-    def block(self, pos):
-        return self._pos >= pos
+    @property
+    def radius(self):
+        return self._radius
