@@ -1,34 +1,28 @@
-from rule import EschatonRule
+from rule import EscapeEschatonRule
 from obstacle import Asteroid
-from obstacle import Blast
+from obstacle import EschantonPlant
 from spaceship import Spaceship
 import copy
 
-# model
+# model class
 class Eschanton:
     def __init__(self, config):
         self.spaceship = Spaceship(0)
-        self.rule = EschatonRule()
-        self.eschanton = Eschanton(config["t_per_blast_move"])
+        self.rule = EscapeEschatonRule()
+        self.eschanton = EschantonPlant(config["t_per_blast_move"])
         self.size = 0
-        self.obstacle = [ Asteroid(pos = asteroid["offset"], velocity = asterioid["t_per_asteroid_cycle"]) for asteroid in config["asteroids"] ]
-        self.size = max([asteroid["offset"] for asteriod in config["asteroids"]))
+        self.obstacle = [ Asteroid(offset = asteroid["offset"], freq = asteroid["t_per_asteroid_cycle"]) for asteroid in config["asteroids"] ]
+        self.size = max( [ asteroid["offset"] for asteriod in config["asteroids"] ] )
 
     def update(self, accerlate):
         self.spaceship.move()
-        self.accerlate(accerlate)
-        self.blast.move()
+        self.spaceship.accerlate(accerlate)
+        self.eschanton.move()
         for asteroid in self.obstacle:
             asteroid.move()
 
-    def hit_eschaton(self):
-        return self.rule.blast(self.spaceship.pos, self.eschanton.radius))
-
-    def hit_asteriod(self):
-        return self.rule.block(self.spaceship, self.obstacle)
-
     def valid_move(self):
-        return not hit_asteroid() and not self.hit_eschaton()
+        return self.rule.valid(self.spaceship, self.obstacle, self.eschanton.radius)
 
     def win(self):
         return self.rule.escape(self.size, self.spaceship.radius)
@@ -37,17 +31,19 @@ class Eschanton:
         return self.rule.fail(self.size, self.eschanton.radius)
 
     def copy(self):
-        return deep.deepcopy(self)
+        return copy.deepcopy(self)
 
+# controller class
 class AIPlayer:
     def take_turn(self):
         return [1, 0, -1]
 
-class Controller:
+class Game:
     def __init__(self):
         self.trace_list = list()
+        self.player = AIPlayer()
 
-    def play(self, eschanton, trace, player):
+    def escape(self, eschanton, trace):
         if eschanton.win():
             self.trace_list.append(trace[:])
             return
@@ -57,9 +53,9 @@ class Controller:
             curr_eschanton = eschanton.copy()
             eschanton.update(decision)
             # valid move
-            if eschanton.valid_move()
+            if eschanton.valid_move():
                 trace.append(decision)
-                self.play(eschanton, trace, player())
+                self.escape(eschanton, trace)
             # traceback
             trace = trace[:-1]
             eschanton = curr_eschanton.copy()
@@ -68,5 +64,31 @@ class Controller:
     def find_solution(self, config):
         trace = list()
         eschanton = Eschanton(config)
-        self.play(eschanton, trace, AIPlayer())
+        self.escape(eschanton, trace)
         return self.trace_list
+
+
+if __name__ == '__main__':
+    game = Game()
+    config = {
+        "t_per_blast_move": 10,
+        "asteroids": [
+            {
+                "offset": 0,
+                "t_per_asteroid_cycle": 2
+            },
+            {
+                "offset": 1,
+                "t_per_asteroid_cycle": 3
+            },
+            {
+                "offset": 3,
+                "t_per_asteroid_cycle": 4
+            },
+            {
+                "offset": 1,
+                "t_per_asteroid_cycle": 2
+            }
+        ]
+    }
+    print len(game.find_solution(config))

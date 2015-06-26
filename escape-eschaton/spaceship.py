@@ -5,7 +5,7 @@ class Spaceship:
         self._angle    = angle
 
     def move(self):
-        self._pos += self._velocity
+        self._radius += self._velocity
 
     def accerlate(self, accerlate):
         self._velocity += accerlate
