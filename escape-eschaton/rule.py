@@ -19,17 +19,16 @@ class EscapeEschatonRule(Rule):
         return eschaton_radius >= ship_pos
 
     def _block(self, ship, obstacles):
-        # design a binary search instead of linear search
-        if any( [asteroid.block(ship) for asteroid in obstacles] ):
-            return True
-        return False
+        if ship.radius >= len(obstacles):
+            return False
+        return obstacles[ship.radius].block(ship)
 
     def escape(self, size, ship_pos):
-        return ship_pos > size
+        return ship_pos >= size
 
     def fail(self, max_size, curr_size):
         return curr_size >= max_size
 
-    def valid(self, spaceship, obstacles, eschanton_radius):
-        # not hit asteriod/not destoried by blast/not hit escanton
-        return not self._block(spaceship, obstacles) and not self._blast(spaceship.radius, eschanton_radius) and not self._blast(spaceship.pos, 0)
+    def valid(self, spaceship, obstacles):
+        # not destoried by blast/not hit escanton/not hit asteriod
+        return not self._blast(spaceship.radius, obstacles[0].radius) and not self._blast(spaceship.radius, 0) and not self._block(spaceship, obstacles)

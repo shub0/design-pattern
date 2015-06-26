@@ -9,28 +9,34 @@ class Obstacle:
 
 class Asteroid(Obstacle):
     def __init__(self, offset, freq):
-        self._radius = offset
-        self._curr_angle = 0
+        self._angle = 360 / freq * offset
         self._velocity = 360.0 / freq
 
     def move(self):
-        self._curr_angle += self._velocity
-        if self._curr_angle >= 360.0:
-            self._curr_angle -= 360.0
+        self._angle += self._velocity
+        if self._angle >= 360.0:
+            self._angle -= 360.0
 
     def block(self, ship):
-        return self._radius == ship.radius and self._curr_angle == ship.angle
+        return int(self._angle) == ship.angle
 
-class EschantonPlant:
+    def __repr__(self):
+        return "angle: %.1f, velocity: %.2f" % (self._angle, self._velocity)
+
+class EschantonPlant(Obstacle):
     def __init__(self, velocity):
         self._radius = 0
-        self._micro_pos = 0
-        self._velocity = velocity
+        self._velocity = 1.0 / velocity
 
     def move(self):
-        self._micro_pos += 1
-        self._raidus = (self._micro_pos / self._velocity)
+        self._radius += self._velocity
+
+    def block(Self, ship):
+        return self._radius >= ship.raidus
 
     @property
     def radius(self):
-        return self._radius
+        return int(self._radius)
+
+    def __repr__(self):
+        return 'Radius: %d, blast speed: %d' % (self.radius, self._velocity)

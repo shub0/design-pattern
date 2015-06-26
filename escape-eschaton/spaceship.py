@@ -17,3 +17,6 @@ class Spaceship:
     @property
     def angle(self):
         return self._angle
+
+    def __repr__(self):
+        return "Raidus: %d, speed: %d" % (self.radius, self._velocity)
